@@ -28,42 +28,42 @@ enum reportStatus {
 }
 
 model Organization {
-  id                  Int                   @id @default(autoincrement())
-  name                String
-  description         String?               @default("")
-  address             String?               @default("")
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  deletedAt           DateTime?
-  UserHasOrganization UserHasOrganization[]
-  Location            Location[]
-  Shift               Shift[]
+  id          Int                   @id @default(autoincrement())
+  name        String
+  description String?               @default("")
+  address     String?               @default("")
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  deletedAt   DateTime?
+  users       UserHasOrganization[]
+  locations   Location[]
+  shifts      Shift[]
 
   @@map("organizations")
 }
 
 model User {
-  id                  Int                   @id @default(autoincrement())
-  email               String                @unique
-  password            String
-  name                String
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  deletedAt           DateTime?
-  UserHasOrganization UserHasOrganization[]
-  UserHasRole         UserHasRole[]
-  ShiftHasUser        ShiftHasUser[]
-  PresenceHasUser     PresenceHasUser[]
-  Report              Report[]
+  id            Int                   @id @default(autoincrement())
+  email         String                @unique
+  password      String
+  name          String
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  deletedAt     DateTime?
+  organizations UserHasOrganization[]
+  roles         UserHasRole[]
+  shifts        ShiftHasUser[]
+  presences     PresenceHasUser[]
+  reports       Report[]
 
   @@map("users")
 }
 
 model UserHasOrganization {
   id             Int          @id @default(autoincrement())
-  user           User         @relation(fields: [userId], references: [id])
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId         Int
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   organizationId Int
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -72,22 +72,22 @@ model UserHasOrganization {
 }
 
 model Role {
-  id                Int                 @id @default(autoincrement())
-  name              String
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  deletedAt         DateTime?
-  UserHasRole       UserHasRole[]
-  RoleHasPermission RoleHasPermission[]
+  id          Int                 @id @default(autoincrement())
+  name        String
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  deletedAt   DateTime?
+  users       UserHasRole[]
+  permissions RoleHasPermission[]
 
   @@map("roles")
 }
 
 model UserHasRole {
   id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId    Int
-  role      Role     @relation(fields: [roleId], references: [id])
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   roleId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -96,21 +96,21 @@ model UserHasRole {
 }
 
 model Permission {
-  id                Int                 @id @default(autoincrement())
-  name              String
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  deletedAt         DateTime?
-  RoleHasPermission RoleHasPermission[]
+  id        Int                 @id @default(autoincrement())
+  name      String
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  deletedAt DateTime?
+  roles     RoleHasPermission[]
 
   @@map("permissions")
 }
 
 model RoleHasPermission {
   id           Int        @id @default(autoincrement())
-  role         Role       @relation(fields: [roleId], references: [id])
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   roleId       Int
-  permission   Permission @relation(fields: [permissionId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   permissionId Int
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
@@ -120,7 +120,7 @@ model RoleHasPermission {
 
 model Location {
   id             Int          @id @default(autoincrement())
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   organizationId Int
   name           String
   description    String?
@@ -139,7 +139,7 @@ model Location {
 
 model Shift {
   id             Int            @id @default(autoincrement())
-  organization   Organization   @relation(fields: [organizationId], references: [id])
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   organizationId Int
   name           String
   description    String?
@@ -149,18 +149,18 @@ model Shift {
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   deletedAt      DateTime?
-  ShiftHasUser   ShiftHasUser[]
-  Presence       Presence[]
-  Report         Report[]
+  users          ShiftHasUser[]
+  presences      Presence[]
+  reports        Report[]
 
   @@map("shifts")
 }
 
 model ShiftHasUser {
   id        Int       @id @default(autoincrement())
-  shift     Shift     @relation(fields: [shiftId], references: [id])
+  shift     Shift     @relation(fields: [shiftId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   shiftId   Int
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId    Int
   status    status    @default(ACTIVE)
   createdAt DateTime  @default(now())
@@ -171,25 +171,25 @@ model ShiftHasUser {
 }
 
 model Presence {
-  id              Int               @id @default(autoincrement())
-  shift           Shift             @relation(fields: [shiftId], references: [id])
-  shiftId         Int
-  latitude        Float
-  longitude       Float
-  status          status            @default(ACTIVE)
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  deletedAt       DateTime?
-  PresenceHasUser PresenceHasUser[]
+  id        Int               @id @default(autoincrement())
+  shift     Shift             @relation(fields: [shiftId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  shiftId   Int
+  latitude  Float
+  longitude Float
+  status    status            @default(ACTIVE)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  deletedAt DateTime?
+  users     PresenceHasUser[]
 
   @@map("presences")
 }
 
 model PresenceHasUser {
   id         Int            @id @default(autoincrement())
-  presence   Presence       @relation(fields: [presenceId], references: [id])
+  presence   Presence       @relation(fields: [presenceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   presenceId Int
-  user       User           @relation(fields: [userId], references: [id])
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId     Int
   status     presenceStatus @default(SKIP)
   createdAt  DateTime       @default(now())
@@ -201,11 +201,11 @@ model PresenceHasUser {
 
 model Report {
   id         Int          @id @default(autoincrement())
-  shift      Shift        @relation(fields: [shiftId], references: [id])
+  shift      Shift        @relation(fields: [shiftId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   shiftId    Int
-  user       User         @relation(fields: [userId], references: [id])
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId     Int
-  location   Location     @relation(fields: [locationId], references: [id])
+  location   Location     @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   locationId Int
   latitude   Float
   longitude  Float
