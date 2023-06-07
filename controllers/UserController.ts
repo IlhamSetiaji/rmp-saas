@@ -26,6 +26,36 @@ class UserController {
             return ResponseFormatter.error(res, error.message);
         }
     };
+
+    register = async (req: Request, res: Response) => {
+        try {
+            const { name, email, password } = req.body;
+            const user = await this.userService.register(name, email, password);
+            return ResponseFormatter.success(res, user, 'Register success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    verifyEmail = async (req: Request, res: Response) => {
+        try {
+            const { email, token } = req.query;
+            await this.userService.verifyEmail(email as string, token as string);
+            return ResponseFormatter.success(res, null, 'Verify email success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    resendEmailVerification = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.query;
+            const token = await this.userService.resendEmailVerification(email as string);
+            return ResponseFormatter.success(res, token, 'Resend email verification success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
 }
 
 export default new UserController();

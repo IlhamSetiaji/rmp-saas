@@ -12,6 +12,7 @@ const main = async () => {
             name: "Admin",
             email: "admin@test.test",
             password,
+            emailVerifiedAt: new Date(),
         },
     });
 
@@ -20,6 +21,7 @@ const main = async () => {
             name: "HRD",
             email: "hrd@test.test",
             password,
+            emailVerifiedAt: new Date(),
         },
     });
 
@@ -28,6 +30,7 @@ const main = async () => {
             name: "Employee",
             email: "employee@test.test",
             password,
+            emailVerifiedAt: new Date(),
         },
     });
 
