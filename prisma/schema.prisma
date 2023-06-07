@@ -43,18 +43,21 @@ model Organization {
 }
 
 model User {
-  id            Int                   @id @default(autoincrement())
-  email         String                @unique
-  password      String
-  name          String
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
-  deletedAt     DateTime?
-  organizations UserHasOrganization[]
-  roles         UserHasRole[]
-  shifts        ShiftHasUser[]
-  presences     PresenceHasUser[]
-  reports       Report[]
+  id              Int                   @id @default(autoincrement())
+  email           String                @unique
+  password        String
+  name            String
+  phone           String?
+  status          status                @default(ACTIVE)
+  emailVerifiedAt DateTime?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  deletedAt       DateTime?
+  organizations   UserHasOrganization[]
+  roles           UserHasRole[]
+  shifts          ShiftHasUser[]
+  presences       PresenceHasUser[]
+  reports         Report[]
 
   @@map("users")
 }
@@ -221,7 +224,8 @@ model Report {
 model EmailVerifyToken {
   id        Int      @id @default(autoincrement())
   email     String
-  token     String
+  token     String   @unique
+  expiredAt DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -231,7 +235,8 @@ model EmailVerifyToken {
 model PasswordResetToken {
   id        Int      @id @default(autoincrement())
   email     String
-  token     String
+  token     String   @unique
+  expiredAt DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

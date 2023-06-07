@@ -1,5 +1,5 @@
 import IUserRepository from "./IUserRepository";
-import { User, PrismaClient } from "@prisma/client";
+import { User, PrismaClient, EmailVerifyToken } from "@prisma/client";
 
 class UserRepository implements IUserRepository {
     private prisma: PrismaClient;
@@ -28,6 +28,69 @@ class UserRepository implements IUserRepository {
                         role: true,
                     }
                 }
+            }
+        });
+    };
+
+    create = async (name: string, email: string, password: string): Promise<User> => {
+        return await this.prisma.user.create({
+            data: {
+                name,
+                email,
+                password,
+                roles: {
+                    create: {
+                        roleId: 1,
+                    }
+                }
+            },
+            include: {
+                roles: {
+                    include: {
+                        role: true,
+                    }
+                }
+            }
+        });
+    };
+
+    insertEmailVerifyToken = async (email: string, token: string): Promise<any> => {
+        return await this.prisma.emailVerifyToken.create({
+            data: {
+                email,
+                token,
+                expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            }
+        });
+    };
+
+    getEmailVerifyToken = async (email: string, token: string): Promise<any> => {
+        return await this.prisma.emailVerifyToken.findFirst({
+            where: {
+                email,
+                token,
+                expiredAt: {
+                    gte: new Date(),
+                }
+            }
+        });
+    };
+
+    deleteEmailVerifyToken = async (token: string): Promise<EmailVerifyToken> => {
+        return await this.prisma.emailVerifyToken.delete({
+            where: {
+                token,
+            }
+        });
+    };
+
+    verifyUser = async (email: string): Promise<User> => {
+        return await this.prisma.user.update({
+            where: {
+                email,
+            },
+            data: {
+                emailVerifiedAt: new Date(),
             }
         });
     };
