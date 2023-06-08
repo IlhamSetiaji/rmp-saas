@@ -3,7 +3,6 @@ import UserController from "../controllers/UserController";
 import { AuthMiddleware } from "../middlewares/AuthMiddleware";
 import { RoleMiddleware } from "../middlewares/RoleMiddleware";
 import { EmailVerifiedMiddleware } from "../middlewares/EmailVerifiedMiddleware";
-import { Request, Response } from "express";
 import multer from "multer";
 const upload = multer({ dest: "uploads/" });
 import StoreUserValidation from "../validations/User/StoreUserValidation";

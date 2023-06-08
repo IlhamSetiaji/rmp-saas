@@ -32,6 +32,7 @@ export const AuthMiddleware = async (
         if (!user) {
             throw new Error("Unauthenticated");
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _, ...userWithoutPassword } = user;
         req.currentUser = { ...userWithoutPassword, roles: userWithoutPassword.roles.map((role) => role.role)};
         next();
