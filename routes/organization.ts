@@ -2,6 +2,7 @@ import { Router } from "express";
 import OrganizationController from "../controllers/OrganizationController";
 import { AuthMiddleware } from "../middlewares/AuthMiddleware";
 import { AdminMiddleware } from "../middlewares/AdminMiddleware";
+import { EmailVerifiedMiddleware } from "../middlewares/EmailVerifiedMiddleware";
 import multer from "multer";
 const upload = multer({ dest: "uploads/" });
 import CreateOrganizationValidation from "../validations/Organization/CreateOrganizationValidation";
@@ -9,7 +10,7 @@ import AssignUsersToOrganizationValidation from "../validations/Organization/Ass
 
 const router = Router();
 
-router.use(AuthMiddleware, AdminMiddleware);
+router.use(AuthMiddleware, EmailVerifiedMiddleware, AdminMiddleware);
 
 router.get("/", OrganizationController.getAllOrganizations);
 router.get("/:id/detail", OrganizationController.getOrganizationById);

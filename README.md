@@ -30,7 +30,7 @@ npm install
 
 ## Migrate the database
 ```
-npx prisma db push
+npx prisma migrate dev --name init
 ```
 
 ## Seed the database
