@@ -14,6 +14,10 @@ class OrganizationService implements IOrganizationService{
     };
 
     getOrganizationById = async (id: number) => {
+        const organization = await this.organizationRepository.getOrganizationById(id);
+        if (!organization) {
+            throw new Error("Organization not found");
+        }
         return await this.organizationRepository.getOrganizationById(id);
     };
 
@@ -22,7 +26,35 @@ class OrganizationService implements IOrganizationService{
     };
 
     assignUsersToOrganization = async (userId: number[], organizationId: number) => {
+        const organization = await this.organizationRepository.getOrganizationById(organizationId);
+        if (!organization) {
+            throw new Error("Organization not found");
+        }
         return await this.organizationRepository.assignUsersToOrganization(userId, organizationId);
+    };
+
+    updateOrganization = async (id: number, organization: Organization) => {
+        const organizationToUpdate = await this.organizationRepository.getOrganizationById(id);
+        if (!organizationToUpdate) {
+            throw new Error("Organization not found");
+        }
+        return await this.organizationRepository.updateOrganization(id, organization);
+    };
+
+    resignUsersFromOrganization = async (userId: number[], organizationId: number) => {
+        const organization = await this.organizationRepository.getOrganizationById(organizationId);
+        if (!organization) {
+            throw new Error("Organization not found");
+        }
+        return await this.organizationRepository.resignUsersFromOrganization(userId, organizationId);
+    };
+
+    deleteOrganization = async (id: number) => {
+        const organization = await this.organizationRepository.getOrganizationById(id);
+        if (!organization) {
+            throw new Error("Organization not found");
+        }
+        return await this.organizationRepository.deleteOrganization(id);
     };
 }
 
