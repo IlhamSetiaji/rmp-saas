@@ -56,6 +56,27 @@ class UserController {
             return ResponseFormatter.error(res, error.message);
         }
     };
+
+    sendPasswordResetToken = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body;
+            const token = await this.userService.sendPasswordResetToken(email);
+            return ResponseFormatter.success(res, token, 'Send password reset token success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    resetPassword = async (req: Request, res: Response) => {
+        try {
+            const { email, token } = req.query;
+            const { password } = req.body;
+            await this.userService.resetPassword(email as string, password, token as string);
+            return ResponseFormatter.success(res, null, 'Reset password success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
 }
 
 export default new UserController();

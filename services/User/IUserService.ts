@@ -9,6 +9,9 @@ interface IUserService {
     sendEmailVerification(email: string, token: string): Promise<any>;
     resendEmailVerification(email: string): Promise<any>;
     verifyEmail(email: string, token: string): Promise<any>;
+    generatePasswordResetToken(email: string): Promise<string>;
+    sendPasswordResetToken(email: string): Promise<any>;
+    resetPassword(email: string, password: string, token: string): Promise<any>;
 }
 
 export default IUserService;
