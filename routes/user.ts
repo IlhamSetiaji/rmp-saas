@@ -1,12 +1,12 @@
 import { Router } from "express";
 import UserController from "../controllers/UserController";
 import { AuthMiddleware } from "../middlewares/AuthMiddleware";
-import { AdminMiddleware } from "../middlewares/AdminMiddleware";
+import { RoleMiddleware } from "../middlewares/RoleMiddleware";
 import { EmailVerifiedMiddleware } from "../middlewares/EmailVerifiedMiddleware";
 
 const router = Router();
 
-router.use(AuthMiddleware, EmailVerifiedMiddleware, AdminMiddleware);
+router.use(AuthMiddleware, EmailVerifiedMiddleware, RoleMiddleware(["Admin"]));
 router.get("/", UserController.getAllUsers);
 
 export default router;

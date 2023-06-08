@@ -38,14 +38,49 @@ class OrganizationRepository implements IOrganizationRepository {
                             user: {
                                 connect: {
                                     id: +id,
-                                }
-                            }
+                                },
+                            },
                         },
                     },
                 },
             });
         });
         return true;
+    };
+
+    updateOrganization = async (
+        id: number,
+        organization: Organization
+    ): Promise<Organization> => {
+        return await this.prisma.organization.update({
+            where: { id },
+            data: organization,
+        });
+    };
+
+    resignUsersFromOrganization = async (
+        userId: number[],
+        organizationId: number
+    ): Promise<any> => {
+        await this.prisma.organization.update({
+            where: { id: organizationId },
+            data: {
+                users: {
+                    deleteMany: userId.map((id) => {
+                        return {
+                            userId: +id,
+                        };
+                    }),
+                },
+            },
+        });
+        return true;
+    };
+
+    deleteOrganization = async (id: number): Promise<Organization> => {
+        return await this.prisma.organization.delete({
+            where: { id },
+        });
     };
 }
 
