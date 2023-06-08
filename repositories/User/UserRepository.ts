@@ -8,7 +8,7 @@ class UserRepository implements IUserRepository {
     }
 
     getAllUsers = async (): Promise<User[]> => {
-        return await this.prisma.user.findMany({
+        const users = await this.prisma.user.findMany({
             include: {
                 roles: {
                     include: {
@@ -16,6 +16,10 @@ class UserRepository implements IUserRepository {
                     }
                 }
             }
+        });
+
+        return users.map((user) => {
+            return { ...user, roles: user.roles.map((role) => role.role)} as User;
         });
     };
 
@@ -33,14 +37,14 @@ class UserRepository implements IUserRepository {
     };
 
     create = async (name: string, email: string, password: string): Promise<User> => {
-        return await this.prisma.user.create({
+        const user = await this.prisma.user.create({
             data: {
                 name,
                 email,
                 password,
                 roles: {
                     create: {
-                        roleId: 1,
+                        roleId: 2,
                     }
                 }
             },
@@ -52,6 +56,7 @@ class UserRepository implements IUserRepository {
                 }
             }
         });
+        return { ...user, roles: user.roles.map((role) => role.role)} as User;
     };
 
     insertEmailVerifyToken = async (email: string, token: string): Promise<any> => {

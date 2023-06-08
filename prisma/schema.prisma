@@ -71,6 +71,8 @@ model UserHasOrganization {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
+  // @@unique([userId, organizationId])
+
   @@map("user_has_organizations")
 }
 

@@ -16,6 +16,15 @@ const main = async () => {
         },
     });
 
+    const head = await prisma.user.create({
+        data: {
+            name: "Head",
+            email: "head@test.test",
+            password,
+            emailVerifiedAt: new Date(),
+        },
+    });
+
     const hrd = await prisma.user.create({
         data: {
             name: "HRD",
@@ -40,6 +49,9 @@ const main = async () => {
                 name: "Admin",
             },
             {
+                name: "Head",
+            },
+            {
                 name: "HRD",
             },
             {
@@ -54,17 +66,30 @@ const main = async () => {
         await prisma.userHasRole.createMany({
             data: [
                 {
-                    userId:
-                        role.id === 1
-                            ? admin.id
-                            : role.id === 2
-                            ? hrd.id
-                            : employee.id,
+                    userId: role.id === 1 ? admin.id : role.id === 2 ? head.id : role.id === 3 ? hrd.id : employee.id,
                     roleId: role.id,
                 },
             ],
         });
     });
+
+    for(let i = 0; i < 10; i++) {
+        const user = await prisma.user.create({
+            data: {
+                name: `Employee ${i}`,
+                email: `employee${i}@test.test`,
+                password,
+                emailVerifiedAt: new Date()
+            },
+        });
+
+        await prisma.userHasRole.create({
+            data: {
+                userId: user.id,
+                roleId: 4
+            }
+        });
+    }
 };
 
 main()
