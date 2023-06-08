@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import UserService from "../services/User/UserService";
 import ResponseFormatter from "../helpers/ResponseFormatter";
+import { CreateUserRequest } from "../requests/User/CreateUserRequest";
+import { UpdateMyProfileRequest } from "../requests/User/UpdateMyProfileRequest";
 
 class UserController {
     private userService: UserService;
@@ -8,10 +10,29 @@ class UserController {
         this.userService = new UserService();
     }
 
+    me = async (req: Request, res: Response) => {
+        try {
+            const user = req.currentUser;
+            return ResponseFormatter.success(res, user, 'Get my profile success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
     getAllUsers = async (req: Request, res: Response) => {
         try {
             const users = await this.userService.getAllUsers();
             return ResponseFormatter.success(res, users, 'Get all users success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    getUserById = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const user = await this.userService.getUserById(parseInt(id));
+            return ResponseFormatter.success(res, user, 'Get user by id success');
         } catch (error: any) {
             return ResponseFormatter.error(res, error.message);
         }
@@ -73,6 +94,37 @@ class UserController {
             const { password } = req.body;
             await this.userService.resetPassword(email as string, password, token as string);
             return ResponseFormatter.success(res, null, 'Reset password success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    createHrd = async (req: Request, res: Response) => {
+        try {
+            const payload: CreateUserRequest = req.body;
+            const hrd = await this.userService.createHrd(payload);
+            return ResponseFormatter.success(res, hrd, 'Create HRD success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    createEmployee = async (req: Request, res: Response) => {
+        try {
+            const payload: CreateUserRequest = req.body;
+            const employee = await this.userService.createEmployee(payload);
+            return ResponseFormatter.success(res, employee, 'Create employee success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    updateMyProfile = async (req: Request, res: Response) => {
+        try {
+            const payload: UpdateMyProfileRequest = req.body;
+            const { id } = req.currentUser;
+            const user = await this.userService.updateMyProfile(payload, id);
+            return ResponseFormatter.success(res, user, 'Update my profile success');
         } catch (error: any) {
             return ResponseFormatter.error(res, error.message);
         }

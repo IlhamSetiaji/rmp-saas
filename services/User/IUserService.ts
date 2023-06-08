@@ -1,4 +1,6 @@
 import { User } from "@prisma/client";
+import { CreateUserRequest } from "../../requests/User/CreateUserRequest";
+import { UpdateMyProfileRequest } from "../../requests/User/UpdateMyProfileRequest";
 
 interface IUserService {
     excludePassword(user: User): any;
@@ -12,6 +14,10 @@ interface IUserService {
     generatePasswordResetToken(email: string): Promise<string>;
     sendPasswordResetToken(email: string): Promise<any>;
     resetPassword(email: string, password: string, token: string): Promise<any>;
+    createHrd(user: CreateUserRequest): Promise<User>;
+    getUserById(id: number): Promise<User | null>;
+    createEmployee(user: CreateUserRequest): Promise<User>;
+    updateMyProfile(payload: UpdateMyProfileRequest, id: number): Promise<User>;
 }
 
 export default IUserService;

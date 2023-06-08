@@ -1,3 +1,5 @@
+import { CreateUserRequest } from "../../requests/User/CreateUserRequest";
+import { UpdateMyProfileRequest } from "../../requests/User/UpdateMyProfileRequest";
 import IUserRepository from "./IUserRepository";
 import { User, PrismaClient, EmailVerifyToken } from "@prisma/client";
 
@@ -137,6 +139,58 @@ class UserRepository implements IUserRepository {
             },
             data: {
                 password,
+            }
+        });
+    };
+
+    createHrd = async (user: CreateUserRequest): Promise<any> => {
+        return await this.prisma.user.create({
+            data: {
+                ...user,
+                emailVerifiedAt: new Date(),
+                roles: {
+                    create: {
+                        roleId: 3,
+                    }
+                }
+            }
+        });
+    };
+
+    getUserById = async (id: number): Promise<User | null> => {
+        return await this.prisma.user.findUnique({
+            where: { id },
+            include: {
+                roles: {
+                    include: {
+                        role: true,
+                    }
+                }
+            }
+        });
+    };
+
+    createEmployee = async (user: CreateUserRequest): Promise<any> => {
+        return await this.prisma.user.create({
+            data: {
+                ...user,
+                emailVerifiedAt: new Date(),
+                roles: {
+                    create: {
+                        roleId: 4,
+                    }
+                }
+            }
+        });
+    };
+
+    updateMyProfile = async (payload: UpdateMyProfileRequest, id: number): Promise<any> => {
+        return await this.prisma.user.update({
+            where: {
+                id: +id,
+            },
+            data: {
+                ...payload,
             }
         });
     };

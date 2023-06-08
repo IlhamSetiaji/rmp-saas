@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 import { User } from "@prisma/client";
 import transporter from "../../config/NodeMailer";
 import crypto from "crypto";
+import { CreateUserRequest } from "../../requests/User/CreateUserRequest";
+import { UpdateMyProfileRequest } from "../../requests/User/UpdateMyProfileRequest";
 
 class UserService implements IUserService {
     private userRepository: UserRepository;
@@ -155,7 +157,7 @@ class UserService implements IUserService {
             to: user.email,
             subject: "Reset Password",
             html: `<p>Click <a href="http://localhost:3000/api/reset-password?email=${user.email}&token=${token}">here</a> to reset your password</p>
-            <p>Or copy this link to your browser: http://localhost:3000/api/reset-password?email=${user.email}&token=${token}</p>`
+            <p>Or copy this link to your browser: http://localhost:3000/api/reset-password?email=${user.email}&token=${token}</p>`,
         };
         setTimeout(async () => {
             await transporter.sendMail(mailOptions);
@@ -172,10 +174,8 @@ class UserService implements IUserService {
         if (!user) {
             throw new Error("User not found");
         }
-        const passwordResetToken = await this.userRepository.getPasswordResetToken(
-            user.email,
-            token
-        );
+        const passwordResetToken =
+            await this.userRepository.getPasswordResetToken(user.email, token);
         if (!passwordResetToken) {
             throw new Error("Token is invalid or expired");
         }
@@ -183,6 +183,45 @@ class UserService implements IUserService {
         await this.userRepository.updatePassword(email, hashedPassword);
         await this.userRepository.deletePasswordResetToken(token);
         return true;
+    };
+
+    createHrd = async (user: CreateUserRequest): Promise<User> => {
+        const userExist = await this.userRepository.findByEmail(user.email);
+        if (userExist) {
+            throw new Error("User already registered");
+        }
+        user.password = await bcrypt.hash(user.password, 10);
+        delete user.password_confirmation;
+        return await this.userRepository.createHrd(user);
+    };
+
+    getUserById = async (id: number): Promise<User | null> => {
+        const user = await this.userRepository.getUserById(id);
+        if (!user) {
+            throw new Error("User not found");
+        }
+        return user;
+    };
+
+    createEmployee = async (user: CreateUserRequest): Promise<User> => {
+        const userExist = await this.userRepository.findByEmail(user.email);
+        if (userExist) {
+            throw new Error("User already registered");
+        }
+        user.password = await bcrypt.hash(user.password, 10);
+        delete user.password_confirmation;
+        return await this.userRepository.createEmployee(user);
+    };
+
+    updateMyProfile = async (
+        payload: UpdateMyProfileRequest,
+        id: number
+    ): Promise<User> => {
+        const user = await this.userRepository.getUserById(id);
+        if (!user) {
+            throw new Error("User not found");
+        }
+        return await this.userRepository.updateMyProfile(payload, id);
     };
 }
 

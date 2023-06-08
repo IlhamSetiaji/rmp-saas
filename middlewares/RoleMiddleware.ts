@@ -3,11 +3,11 @@ import { Request, Response, NextFunction } from "express";
 export const RoleMiddleware = (roles: string[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { user } = req.body;
-            if(!user) {
+            const currentUser = req.currentUser;
+            if(!currentUser) {
                 throw new Error("Unauthenticated");
             }
-            const userRole = user.roles.find((role: { role: { name: string; }; }) => roles.includes(role.role.name));
+            const userRole = currentUser.roles.find((role: { name: string; }) => roles.includes(role.name));
             if (!userRole) {
                 throw new Error("Unauthorized");
             }
