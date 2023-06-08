@@ -30,7 +30,7 @@ export const AuthMiddleware = async (
             },
         });
         if (!user) {
-            throw new Error("Unauthorized");
+            throw new Error("Unauthenticated");
         }
         req.body.user = user;
         next();

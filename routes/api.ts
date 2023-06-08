@@ -1,7 +1,7 @@
 import { Router } from "express";
+import user from "./user";
+import organization from "./organization";
 import UserController from "../controllers/UserController";
-import { AuthMiddleware } from "../middlewares/AuthMiddleware";
-import { AdminMiddleware } from "../middlewares/AdminMiddleware";
 import multer from "multer";
 import LoginValidation from "../validations/User/LoginValidation";
 import RegisterValidation from "../validations/User/RegisterValidation";
@@ -24,13 +24,20 @@ router.get(
     "/resend-email-verification",
     UserController.resendEmailVerification
 );
-router.post("/forgot-password", upload.any(), ForgotPasswordValidation, UserController.sendPasswordResetToken);
-router.post("/reset-password", upload.any(), ResetPasswordValidation, UserController.resetPassword);
-
-router.use(
-    "/users",
-    AuthMiddleware,
-    AdminMiddleware,
-    router.get("/", UserController.getAllUsers)
+router.post(
+    "/forgot-password",
+    upload.any(),
+    ForgotPasswordValidation,
+    UserController.sendPasswordResetToken
 );
+router.post(
+    "/reset-password",
+    upload.any(),
+    ResetPasswordValidation,
+    UserController.resetPassword
+);
+
+router.use("/users", user);
+router.use("/organizations", organization);
+
 export default router;
