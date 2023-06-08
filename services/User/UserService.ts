@@ -119,17 +119,69 @@ class UserService implements IUserService {
         if (!user) {
             throw new Error("User not found");
         }
-        if(user.emailVerifiedAt) {
+        if (user.emailVerifiedAt) {
             throw new Error("Email already verified");
         }
         const emailVerifyToken = await this.userRepository.getEmailVerifyToken(
-            user.email, token
+            user.email,
+            token
         );
         if (!emailVerifyToken) {
             throw new Error("Token is invalid or expired");
         }
         await this.userRepository.verifyUser(email);
         await this.userRepository.deleteEmailVerifyToken(token);
+        return true;
+    };
+
+    generatePasswordResetToken = async (email: string): Promise<string> => {
+        const user = await this.userRepository.findByEmail(email);
+        if (!user) {
+            throw new Error("User not found");
+        }
+        const token = crypto.randomBytes(64).toString("hex");
+        await this.userRepository.insertPasswordResetToken(user.email, token);
+        return token;
+    };
+
+    sendPasswordResetToken = async (email: string): Promise<any> => {
+        const user = await this.userRepository.findByEmail(email);
+        if (!user) {
+            throw new Error("User not found");
+        }
+        const token = await this.generatePasswordResetToken(user.email);
+        const mailOptions = {
+            from: "ilham.ahmadz18@gmail.com",
+            to: user.email,
+            subject: "Reset Password",
+            html: `<p>Click <a href="http://localhost:3000/api/reset-password?email=${user.email}&token=${token}">here</a> to reset your password</p>
+            <p>Or copy this link to your browser: http://localhost:3000/api/reset-password?email=${user.email}&token=${token}</p>`
+        };
+        setTimeout(async () => {
+            await transporter.sendMail(mailOptions);
+        }, 1000);
+        return this.excludePassword(user);
+    };
+
+    resetPassword = async (
+        email: string,
+        password: string,
+        token: string
+    ): Promise<any> => {
+        const user = await this.userRepository.findByEmail(email);
+        if (!user) {
+            throw new Error("User not found");
+        }
+        const passwordResetToken = await this.userRepository.getPasswordResetToken(
+            user.email,
+            token
+        );
+        if (!passwordResetToken) {
+            throw new Error("Token is invalid or expired");
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await this.userRepository.updatePassword(email, hashedPassword);
+        await this.userRepository.deletePasswordResetToken(token);
         return true;
     };
 }

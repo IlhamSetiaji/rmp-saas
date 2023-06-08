@@ -1,25 +1,21 @@
 import { body, validationResult } from "express-validator";
+import { Request, Response, NextFunction } from "express";
 import ResponseFormatter from "../../helpers/ResponseFormatter";
 
-const LoginValidation = [
+const ForgotPasswordValidation = [
     body("email")
         .notEmpty()
         .withMessage("Email is required")
         .isEmail()
         .withMessage("Email is not valid")
-        .trim()
         .escape(),
-    body("password")
-        .isLength({ min: 6 })
-        .withMessage("Password must be at least 6 characters")
-        .escape(),
-    (req: any, res: any, next: any) => {
+    (req: Request, res: Response, next: NextFunction) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return ResponseFormatter.error(res, errors.array()[0].msg);
+            return ResponseFormatter.error(res, errors.array());
         }
         next();
-    },
+    }
 ];
 
-export default LoginValidation;
+export default ForgotPasswordValidation;

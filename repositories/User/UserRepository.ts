@@ -94,6 +94,47 @@ class UserRepository implements IUserRepository {
             }
         });
     };
+
+    insertPasswordResetToken = async (email: string, token: string): Promise<any> => {
+        return await this.prisma.passwordResetToken.create({
+            data: {
+                email,
+                token,
+                expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            }
+        });
+    };
+
+    getPasswordResetToken = async (email: string, token: string): Promise<any> => {
+        return await this.prisma.passwordResetToken.findFirst({
+            where: {
+                email,
+                token,
+                expiredAt: {
+                    gte: new Date(),
+                }
+            }
+        });
+    };
+
+    deletePasswordResetToken = async (token: string): Promise<any> => {
+        return await this.prisma.passwordResetToken.delete({
+            where: {
+                token,
+            }
+        });
+    };
+
+    updatePassword = async (email: string, password: string): Promise<any> => {
+        return await this.prisma.user.update({
+            where: {
+                email,
+            },
+            data: {
+                password,
+            }
+        });
+    };
 }
 
 export default UserRepository;
