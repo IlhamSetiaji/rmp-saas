@@ -18,6 +18,12 @@ interface IUserService {
     getUserById(id: number): Promise<User | null>;
     createEmployee(user: CreateUserRequest): Promise<User>;
     updateMyProfile(payload: UpdateMyProfileRequest, id: number): Promise<User>;
+    getHeadOfDepartment(): Promise<User[]>;
+    getHumanResourceDepartment(): Promise<User[]>;
+    getEmployee(): Promise<User[]>;
+    getHeadOfDepartmentInOrganization(organizationId: number): Promise<User[]>;
+    getHumanResourceDepartmentInOrganization(organizationId: number): Promise<User[]>;
+    getEmployeeInOrganization(organizationId: number): Promise<User[]>;
 }
 
 export default IUserService;

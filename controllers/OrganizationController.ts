@@ -118,6 +118,23 @@ class OrganizationController {
             return ResponseFormatter.error(res, error.message);
         }
     };
+
+    assignMyselfToOrganization = async (req: Request, res: Response) => {
+        try {
+            const organization =
+                await this.organizationService.assignMyselfToOrganization(
+                    req.currentUser.id,
+                    parseInt(req.params.id)
+                );
+            return ResponseFormatter.success(
+                res,
+                organization,
+                "Organization assigned successfully"
+            );
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
 }
 
 export default new OrganizationController();

@@ -56,6 +56,14 @@ class OrganizationService implements IOrganizationService{
         }
         return await this.organizationRepository.deleteOrganization(id);
     };
+
+    assignMyselfToOrganization = async (userId: number, organizationId: number) => {
+        const organization = await this.organizationRepository.getOrganizationById(organizationId);
+        if (!organization) {
+            throw new Error("Organization not found");
+        }
+        return await this.organizationRepository.assignMyselfToOrganization(userId, organizationId);
+    };
 }
 
 export default OrganizationService;

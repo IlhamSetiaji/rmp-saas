@@ -129,6 +129,63 @@ class UserController {
             return ResponseFormatter.error(res, error.message);
         }
     };
+
+    getHeadOfDepartment = async (req: Request, res: Response) => {
+        try {
+            const hod = await this.userService.getHeadOfDepartment();
+            return ResponseFormatter.success(res, hod, 'Get head of department success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    getHumanResourceDepartment = async (req: Request, res: Response) => {
+        try {
+            const hrd = await this.userService.getHumanResourceDepartment();
+            return ResponseFormatter.success(res, hrd, 'Get human resource department success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    getEmployee = async (req: Request, res: Response) => {
+        try {
+            const employee = await this.userService.getEmployee();
+            return ResponseFormatter.success(res, employee, 'Get employee success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    getHeadOfDepartmentInOrganization = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const hod = await this.userService.getHeadOfDepartmentInOrganization(parseInt(id));
+            return ResponseFormatter.success(res, hod, 'Get head of department in organization success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    getHumanResourceDepartmentInOrganization = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const hrd = await this.userService.getHumanResourceDepartmentInOrganization(parseInt(id));
+            return ResponseFormatter.success(res, hrd, 'Get human resource department in organization success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    getEmployeeInOrganization = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const employee = await this.userService.getEmployeeInOrganization(parseInt(id));
+            return ResponseFormatter.success(res, employee, 'Get employee in organization success');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
 }
 
 export default new UserController();

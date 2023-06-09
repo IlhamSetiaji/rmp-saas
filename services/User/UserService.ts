@@ -223,6 +223,49 @@ class UserService implements IUserService {
         }
         return await this.userRepository.updateMyProfile(payload, id);
     };
+
+    getHeadOfDepartment = async (): Promise<User[]> => {
+        const users = await this.userRepository.getHeadOfDepartment();
+        return users;
+    };
+
+    getHumanResourceDepartment = async (): Promise<User[]> => {
+        const users = await this.userRepository.getHumanResourceDepartment();
+        return users;
+    };
+
+    getEmployee = async (): Promise<User[]> => {
+        const users = await this.userRepository.getEmployee();
+        return users;
+    };
+
+    getHeadOfDepartmentInOrganization = async (
+        organizationId: number
+    ): Promise<User[]> => {
+        const users =
+            await this.userRepository.getHeadOfDepartmentInOrganization(
+                organizationId
+            );
+        return users;
+    };
+
+    getHumanResourceDepartmentInOrganization = async (
+        organizationId: number
+    ): Promise<User[]> => {
+        const users =
+            await this.userRepository.getHumanResourceDepartmentInOrganization(
+                organizationId
+            );
+        return users;
+    };
+
+    getEmployeeInOrganization = async (
+        organizationId: number
+    ): Promise<User[]> => {
+        const users =
+            await this.userRepository.getEmployeeInOrganization(organizationId);
+        return users;
+    };
 }
 
 export default UserService;

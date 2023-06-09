@@ -194,6 +194,165 @@ class UserRepository implements IUserRepository {
             }
         });
     };
+
+    getHeadOfDepartment = async (): Promise<User[]> => {
+        const users = await this.prisma.user.findMany({
+            where: {
+                roles: {
+                    some: {
+                        roleId: 2,
+                    }
+                }
+            },
+            include: {
+                roles: {
+                    include: {
+                        role: true,
+                    }
+                }
+            }
+        });
+
+        return users.map((user) => {
+            return { ...user, roles: user.roles.map((role) => role.role)} as User;
+        });
+    };
+
+    getHumanResourceDepartment = async (): Promise<User[]> => {
+        const users = await this.prisma.user.findMany({
+            where: {
+                roles: {
+                    some: {
+                        roleId: 3,
+                    }
+                }
+            },
+            include: {
+                roles: {
+                    include: {
+                        role: true,
+                    }
+                }
+            }
+        });
+
+        return users.map((user) => {
+            return { ...user, roles: user.roles.map((role) => role.role)} as User;
+        });
+    };
+
+    getEmployee = async (): Promise<User[]> => {
+        const users = await this.prisma.user.findMany({
+            where: {
+                roles: {
+                    some: {
+                        roleId: 4,
+                    }
+                }
+            },
+            include: {
+                roles: {
+                    include: {
+                        role: true,
+                    }
+                }
+            }
+        });
+
+        return users.map((user) => {
+            return { ...user, roles: user.roles.map((role) => role.role)} as User;
+        });
+    };
+
+    getHeadOfDepartmentInOrganization = async (organizationId: number): Promise<User[]> => {
+        const users = await this.prisma.user.findMany({
+            where: {
+                organizations:{
+                    some: {
+                        organization: {
+                            id: organizationId,
+                        }
+                    }
+                },
+                roles: {
+                    some: {
+                        role: {
+                            id: 2,
+                        }
+                    }
+                }
+            },
+            include: {
+                roles: {
+                    include: {
+                        role: true,
+                    }
+                }
+            }
+        });
+
+        return users.map((user) => {
+            return { ...user, roles: user.roles.map((role) => role.role)} as User;
+        });
+    };
+
+    getHumanResourceDepartmentInOrganization = async (organizationId: number): Promise<User[]> => {
+        const users = await this.prisma.user.findMany({
+            where: {
+                organizations:{
+                    some: {
+                        organization: {
+                            id: organizationId,
+                        }
+                    }
+                },
+                roles: {
+                    some: {
+                        roleId: 3,
+                    }
+                }
+            },
+            include: {
+                roles: {
+                    include: {
+                        role: true,
+                    }
+                }
+            }
+        });
+
+        return users.map((user) => {
+            return { ...user, roles: user.roles.map((role) => role.role)} as User;
+        });
+    };
+
+    getEmployeeInOrganization = async (organizationId: number): Promise<User[]> => {
+        const users = await this.prisma.user.findMany({
+            where: {
+                organizations:{
+                    some: {
+                        organizationId,
+                    }
+                },
+                roles: {
+                    some: {
+                        roleId: 4,
+                    }
+                }
+            },
+            include: {
+                roles: {
+                    include: {
+                        role: true,
+                    }
+                }
+            }
+        });
+
+        return users.map((user) => {
+            return { ...user, roles: user.roles.map((role) => role.role)} as User;
+        });
+    };
 }
 
 export default UserRepository;

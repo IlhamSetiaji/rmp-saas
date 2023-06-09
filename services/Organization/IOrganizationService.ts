@@ -8,6 +8,7 @@ interface IOrganizationService {
     updateOrganization(id: number, organization: Organization): Promise<Organization>;
     resignUsersFromOrganization(userId: number[], organizationId: number): Promise<Organization>;
     deleteOrganization(id: number): Promise<Organization>;
+    assignMyselfToOrganization(userId: number, organizationId: number): Promise<Organization>;
 }
 
 export default IOrganizationService;
