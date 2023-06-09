@@ -7,6 +7,7 @@ import LoginValidation from "../validations/User/LoginValidation";
 import RegisterValidation from "../validations/User/RegisterValidation";
 import ForgotPasswordValidation from "../validations/User/ForgotPasswordValidation";
 import ResetPasswordValidation from "../validations/User/ResetPasswordValidation";
+import shift from "./shift";
 
 const upload = multer({ dest: "uploads/" });
 
@@ -39,5 +40,6 @@ router.post(
 
 router.use("/users", user);
 router.use("/organizations", organization);
+router.use("/shifts", shift);
 
 export default router;
