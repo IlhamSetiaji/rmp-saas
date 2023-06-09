@@ -3,6 +3,7 @@ import { UpdateMyProfileRequest } from "../../requests/User/UpdateMyProfileReque
 import IUserRepository from "./IUserRepository";
 import { User, PrismaClient, EmailVerifyToken } from "@prisma/client";
 import dayjs from "dayjs";
+import { hour } from "../../config/timezone";
 
 class UserRepository implements IUserRepository {
     private prisma: PrismaClient;
@@ -10,7 +11,7 @@ class UserRepository implements IUserRepository {
     private timestamps: any;
     constructor() {
         this.prisma = new PrismaClient();
-        this.now = dayjs().add(7, 'hour').toDate();
+        this.now = dayjs().add(hour, 'hour').toDate();
         this.timestamps = {
             createdAt: this.now,
             updatedAt: this.now,

@@ -8,6 +8,7 @@ const upload = multer({ dest: "uploads/" });
 import CreateOrganizationValidation from "../validations/Organization/CreateOrganizationValidation";
 import AssignUsersToOrganizationValidation from "../validations/Organization/AssignUsersToOrganizationValidation";
 import { RoleMiddleware } from "../middlewares/RoleMiddleware";
+import { hour } from "../config/timezone";
 
 const router = Router();
 
@@ -15,13 +16,8 @@ router.use(AuthMiddleware, EmailVerifiedMiddleware);
 
 /* This is just test */
 router.get("/test", (req, res) => {
-    // const currentUser = req.currentUser;
-    // const roles = ["Admin", "Head", "HRD", "Employee"];
-    // const userRole = currentUser.roles.find((role: { name: string }) =>
-    //     roles.includes(role.name)
-    // );
-    // res.json({ userRole });
-    res.send(new Date().toDateString() + " " + new Date().toTimeString());
+    const jam = hour;
+    res.json(jam);
 });
 /* Don't forget to remove this code before deployment */
 
