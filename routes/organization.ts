@@ -15,12 +15,13 @@ router.use(AuthMiddleware, EmailVerifiedMiddleware);
 
 /* This is just test */
 router.get("/test", (req, res) => {
-    const currentUser = req.currentUser;
-    const roles = ["Admin", "Head", "HRD", "Employee"];
-    const userRole = currentUser.roles.find((role: { name: string }) =>
-        roles.includes(role.name)
-    );
-    res.json({ userRole });
+    // const currentUser = req.currentUser;
+    // const roles = ["Admin", "Head", "HRD", "Employee"];
+    // const userRole = currentUser.roles.find((role: { name: string }) =>
+    //     roles.includes(role.name)
+    // );
+    // res.json({ userRole });
+    res.send(new Date().toDateString() + " " + new Date().toTimeString());
 });
 /* Don't forget to remove this code before deployment */
 
@@ -60,12 +61,12 @@ router.get(
 );
 router.get(
     "/:id/hrd",
-    RoleMiddleware(["Admin"]),
+    RoleMiddleware(["Admin", "Head"]),
     UserController.getHumanResourceDepartmentInOrganization
 );
 router.get(
     "/:id/employee",
-    RoleMiddleware(["Admin"]),
+    RoleMiddleware(["Admin","Head", "HRD"]),
     UserController.getEmployeeInOrganization
 );
 router.get(

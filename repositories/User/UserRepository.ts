@@ -2,11 +2,19 @@ import { CreateUserRequest } from "../../requests/User/CreateUserRequest";
 import { UpdateMyProfileRequest } from "../../requests/User/UpdateMyProfileRequest";
 import IUserRepository from "./IUserRepository";
 import { User, PrismaClient, EmailVerifyToken } from "@prisma/client";
+import dayjs from "dayjs";
 
 class UserRepository implements IUserRepository {
     private prisma: PrismaClient;
+    private now: Date;
+    private timestamps: any;
     constructor() {
         this.prisma = new PrismaClient();
+        this.now = dayjs().add(7, 'hour').toDate();
+        this.timestamps = {
+            createdAt: this.now,
+            updatedAt: this.now,
+        };
     }
 
     getAllUsers = async (): Promise<User[]> => {
@@ -44,9 +52,11 @@ class UserRepository implements IUserRepository {
                 name,
                 email,
                 password,
+                ...this.timestamps,
                 roles: {
                     create: {
                         roleId: 2,
+                        ...this.timestamps,
                     }
                 }
             },
@@ -66,7 +76,8 @@ class UserRepository implements IUserRepository {
             data: {
                 email,
                 token,
-                expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                expiredAt: dayjs().add(8, 'hour').toDate(),
+                ...this.timestamps,
             }
         });
     };
@@ -77,7 +88,7 @@ class UserRepository implements IUserRepository {
                 email,
                 token,
                 expiredAt: {
-                    gte: new Date(),
+                    gte: this.now,
                 }
             }
         });
@@ -97,7 +108,7 @@ class UserRepository implements IUserRepository {
                 email,
             },
             data: {
-                emailVerifiedAt: new Date(),
+                emailVerifiedAt: this.now,
             }
         });
     };
@@ -107,7 +118,8 @@ class UserRepository implements IUserRepository {
             data: {
                 email,
                 token,
-                expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                expiredAt: dayjs().add(8, 'hour').toDate(),
+                ...this.timestamps,
             }
         });
     };
@@ -118,7 +130,7 @@ class UserRepository implements IUserRepository {
                 email,
                 token,
                 expiredAt: {
-                    gte: new Date(),
+                    gte: this.now,
                 }
             }
         });
@@ -139,6 +151,7 @@ class UserRepository implements IUserRepository {
             },
             data: {
                 password,
+                updatedAt: this.now,
             }
         });
     };
@@ -148,9 +161,11 @@ class UserRepository implements IUserRepository {
             data: {
                 ...user,
                 emailVerifiedAt: new Date(),
+                ...this.timestamps,
                 roles: {
                     create: {
                         roleId: 3,
+                        ...this.timestamps,
                     }
                 }
             }
@@ -175,9 +190,11 @@ class UserRepository implements IUserRepository {
             data: {
                 ...user,
                 emailVerifiedAt: new Date(),
+                ...this.timestamps,
                 roles: {
                     create: {
                         roleId: 4,
+                        ...this.timestamps,
                     }
                 }
             }
@@ -191,6 +208,7 @@ class UserRepository implements IUserRepository {
             },
             data: {
                 ...payload,
+                updatedAt: this.now,
             }
         });
     };
