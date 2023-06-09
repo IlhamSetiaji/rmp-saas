@@ -17,16 +17,15 @@ class ShiftController {
         }
     };
 
-    // createShiftByOrganization = async (req: Request, res: Response) => {
-    //     try {
-    //         const { organizationId } = req.params;
-    //         const { name, startTime, endTime } = req.body;
-    //         const shift = await this.shiftService.createShiftByOrganization(organizationId, name, startTime, endTime);
-    //         return ResponseFormatter.success(res, shift, 'Shift created successfully');
-    //     } catch (error: any) {
-    //         return ResponseFormatter.error(res, error.message);
-    //     }
-    // };
+    createShiftByOrganization = async (req: Request, res: Response) => {
+        try {
+            const { organizationId } = req.params;
+            const shift = await this.shiftService.createShiftByOrganization(Number(organizationId), req.body);
+            return ResponseFormatter.success(res, shift, 'Shift created successfully');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
 }
 
 export default new ShiftController();
