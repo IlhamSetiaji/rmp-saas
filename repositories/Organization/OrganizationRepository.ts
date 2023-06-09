@@ -82,6 +82,27 @@ class OrganizationRepository implements IOrganizationRepository {
             where: { id },
         });
     };
+
+    assignMyselfToOrganization = async (
+        userId: number,
+        organizationId: number
+    ): Promise<any> => {
+        await this.prisma.organization.update({
+            where: { id: organizationId },
+            data: {
+                users: {
+                    create: {
+                        user: {
+                            connect: {
+                                id: +userId,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+        return true;
+    };
 }
 
 export default OrganizationRepository;

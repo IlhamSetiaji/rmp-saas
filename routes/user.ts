@@ -39,5 +39,20 @@ router.put(
     UpdateMyProfileValidation,
     UserController.updateMyProfile
 );
+router.get(
+    "/head-of-department",
+    RoleMiddleware(["Admin"]),
+    UserController.getHeadOfDepartment
+);
+router.get(
+    "/human-resource-department",
+    RoleMiddleware(["Admin"]),
+    UserController.getHumanResourceDepartment
+);
+router.get(
+    "/employee",
+    RoleMiddleware(["Admin"]),
+    UserController.getEmployee
+);
 
 export default router;

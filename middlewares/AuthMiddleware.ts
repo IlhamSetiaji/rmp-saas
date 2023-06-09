@@ -34,7 +34,7 @@ export const AuthMiddleware = async (
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _, ...userWithoutPassword } = user;
-        req.currentUser = { ...userWithoutPassword, roles: userWithoutPassword.roles.map((role) => role.role)};
+        req.currentUser = { ...userWithoutPassword, roles: user.roles.map((role) => role.role)};
         next();
     } catch (error: any) {
         return ResponseFormatter.error(res, error.message);

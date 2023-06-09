@@ -19,6 +19,12 @@ interface IUserRepository {
     getUserById(id: number): Promise<User | null>;
     createEmployee(user: CreateUserRequest): Promise<any>;
     updateMyProfile(payload: UpdateMyProfileRequest, id: number): Promise<any>;
+    getHeadOfDepartment(): Promise<User[]>;
+    getHumanResourceDepartment(): Promise<User[]>;
+    getEmployee(): Promise<User[]>;
+    getHeadOfDepartmentInOrganization(organizationId: number): Promise<User[]>;
+    getHumanResourceDepartmentInOrganization(organizationId: number): Promise<User[]>;
+    getEmployeeInOrganization(organizationId: number): Promise<User[]>;
 }
 
 export default IUserRepository;
