@@ -1,10 +1,19 @@
 import { PrismaClient, Organization } from "@prisma/client";
 import IOrganizationRepository from "./IOrganizationRepository";
+import dayjs from "dayjs";
+import { hour } from "../../config/timezone";
 
 class OrganizationRepository implements IOrganizationRepository {
     private prisma: PrismaClient;
+    private now: Date;
+    private timestamps: any;
     constructor() {
         this.prisma = new PrismaClient();
+        this.now = dayjs().add(hour, 'hour').toDate();
+        this.timestamps = {
+            createdAt: this.now,
+            updatedAt: this.now,
+        };
     }
 
     getAllOrganizations = async (): Promise<Organization[]> => {
@@ -21,7 +30,10 @@ class OrganizationRepository implements IOrganizationRepository {
         organization: Organization
     ): Promise<Organization> => {
         return await this.prisma.organization.create({
-            data: organization,
+            data: {
+                ...organization,
+                ...this.timestamps
+            },
         });
     };
 
@@ -40,6 +52,7 @@ class OrganizationRepository implements IOrganizationRepository {
                                     id: +id,
                                 },
                             },
+                            ...this.timestamps
                         },
                     },
                 },
@@ -54,7 +67,10 @@ class OrganizationRepository implements IOrganizationRepository {
     ): Promise<Organization> => {
         return await this.prisma.organization.update({
             where: { id },
-            data: organization,
+            data: {
+                ...organization,
+                updatedAt: this.now,
+            },
         });
     };
 
@@ -97,6 +113,7 @@ class OrganizationRepository implements IOrganizationRepository {
                                 id: +userId,
                             },
                         },
+                        ...this.timestamps
                     },
                 },
             },
