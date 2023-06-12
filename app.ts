@@ -11,6 +11,8 @@ const name = process.env.APP_NAME;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/uploads", express.static("uploads"));
+
 app.use(route);
 
 app.listen(port, () => {
