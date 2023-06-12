@@ -8,6 +8,7 @@ interface IShiftService {
     getShiftById(shiftId: number): Promise<Shift | null>;
     updateShiftById(shiftId: number, shift: Shift): Promise<Shift | null>;
     deleteShiftById(shiftId: number): Promise<Shift | null>;
+    assignEmployeesToShift(shiftId: number, userId: number[]): Promise<any>;
 }
 
 export default IShiftService;

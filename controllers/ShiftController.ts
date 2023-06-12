@@ -75,6 +75,20 @@ class ShiftController {
             return ResponseFormatter.error(res, error.message);
         }
     };
+
+    assignEmployeesToShift = async (req: Request, res: Response) => {
+        try {
+            const { shiftId } = req.params;
+            const { userIds } = req.body;
+            const shift = await this.shiftService.assignEmployeesToShift(Number(shiftId), userIds);
+            if(!shift) {
+                return ResponseFormatter.notFound(res, 'Shift not found');
+            }
+            return ResponseFormatter.success(res, shift, 'Shift updated successfully');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
 }
 
 export default new ShiftController();
