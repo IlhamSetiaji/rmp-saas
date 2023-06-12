@@ -17,28 +17,39 @@ class ShiftService implements IShiftService {
     };
 
     checkIfOrganizationExist = async (organizationId: number) => {
-        const organization: Organization | null = await this.organizationRepository.getOrganizationById(organizationId);
+        const organization: Organization | null =
+            await this.organizationRepository.getOrganizationById(
+                organizationId
+            );
         if (!organization) {
-            throw new Error('Organization not found');
+            throw new Error("Organization not found");
         }
         return true;
     };
 
-    createShiftByOrganization = async (organizationId: number, shift: Shift) => {
-        const today = dayjs(new Date()).format('YYYY-MM-DD');
+    createShiftByOrganization = async (
+        organizationId: number,
+        shift: Shift
+    ) => {
+        const today = dayjs(new Date()).format("YYYY-MM-DD");
         shift.startAt = new Date(today + " " + shift.startAt);
         shift.endAt = new Date(today + " " + shift.endAt);
-        const diff = dayjs(shift.endAt).diff(dayjs(shift.startAt), 'minute');
+        const diff = dayjs(shift.endAt).diff(dayjs(shift.startAt), "minute");
         if (diff < 0) {
-            throw new Error('End time must be greater than start time');
+            throw new Error("End time must be greater than start time");
         }
         await this.checkIfOrganizationExist(organizationId);
-        return await this.shiftRepository.createShiftByOrganization(organizationId, shift);
+        return await this.shiftRepository.createShiftByOrganization(
+            organizationId,
+            shift
+        );
     };
 
     getShiftsByOrganization = async (organizationId: number) => {
         await this.checkIfOrganizationExist(organizationId);
-        return await this.shiftRepository.getShiftsByOrganization(organizationId);
+        return await this.shiftRepository.getShiftsByOrganization(
+            organizationId
+        );
     };
 
     getShiftById = async (shiftId: number) => {
@@ -48,14 +59,14 @@ class ShiftService implements IShiftService {
     updateShiftById = async (shiftId: number, shift: Shift) => {
         const shiftToUpdate = await this.shiftRepository.getShiftById(shiftId);
         if (!shiftToUpdate) {
-            throw new Error('Shift not found');
+            throw new Error("Shift not found");
         }
-        const today = dayjs(new Date()).format('YYYY-MM-DD');
+        const today = dayjs(new Date()).format("YYYY-MM-DD");
         shift.startAt = new Date(today + " " + shift.startAt);
         shift.endAt = new Date(today + " " + shift.endAt);
-        const diff = dayjs(shift.endAt).diff(dayjs(shift.startAt), 'minute');
+        const diff = dayjs(shift.endAt).diff(dayjs(shift.startAt), "minute");
         if (diff < 0) {
-            throw new Error('End time must be greater than start time');
+            throw new Error("End time must be greater than start time");
         }
         return await this.shiftRepository.updateShiftById(shiftId, shift);
     };
@@ -63,9 +74,23 @@ class ShiftService implements IShiftService {
     deleteShiftById = async (shiftId: number) => {
         const shiftToDelete = await this.shiftRepository.getShiftById(shiftId);
         if (!shiftToDelete) {
-            throw new Error('Shift not found');
+            throw new Error("Shift not found");
         }
         return await this.shiftRepository.deleteShiftById(shiftId);
+    };
+
+    assignEmployeesToShift = async (shiftId: number, userIds: number[]) => {
+        const shift = await this.shiftRepository.getShiftById(shiftId);
+        if (!shift) {
+            throw new Error("Shift not found");
+        }
+        const users = await this.shiftRepository.getUsersByShiftId(shiftId);
+        const usersId = users.users.map((user) => user.id);
+        const usersToAssign = userIds.filter((id) => !usersId.includes(+id));
+        return await this.shiftRepository.assignEmployeesToShift(
+            shiftId,
+            usersToAssign
+        );
     };
 }
 

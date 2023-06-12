@@ -4,6 +4,7 @@ import { EmailVerifiedMiddleware } from "../middlewares/EmailVerifiedMiddleware"
 import { RoleMiddleware } from "../middlewares/RoleMiddleware";
 import ShiftController from "../controllers/ShiftController";
 import CreateShiftValidation from "../validations/Shift/CreateShiftValidation";
+import AssignUsersToShiftValidation from "../validations/Shift/AssignUsersToShiftValidation";
 import multer from "multer";
 const upload = multer({ dest: "uploads/" });
 
@@ -31,5 +32,11 @@ router.put(
     ShiftController.updateShiftById
 );
 router.delete("/:shiftId/delete", ShiftController.deleteShiftById);
+router.post(
+    "/:shiftId/assign",
+    upload.any(),
+    AssignUsersToShiftValidation,
+    ShiftController.assignEmployeesToShift
+);
 
 export default router;

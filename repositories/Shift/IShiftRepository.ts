@@ -7,6 +7,8 @@ interface IShiftRepository {
     getShiftById(shiftId: number): Promise<Shift | null>;
     updateShiftById(shiftId: number, shift: Shift): Promise<Shift | null>;
     deleteShiftById(shiftId: number): Promise<Shift | null>;
+    assignEmployeesToShift(shiftId: number, userIds: number[]): Promise<Shift | null>;
+    getUsersByShiftId(shiftId: number): Promise<any>;
 }
 
 export default IShiftRepository;
