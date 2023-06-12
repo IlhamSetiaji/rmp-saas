@@ -27,6 +27,16 @@ export const AuthMiddleware = async (
                         role: true,
                     },
                 },
+                organizations: {
+                    include: {
+                        organization: true,
+                    },
+                },
+                shifts: {
+                    include: {
+                        shift: true,
+                    },
+                },
             },
         });
         if (!user) {
@@ -34,7 +44,14 @@ export const AuthMiddleware = async (
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _, ...userWithoutPassword } = user;
-        req.currentUser = { ...userWithoutPassword, roles: user.roles.map((role) => role.role)};
+        req.currentUser = {
+            ...userWithoutPassword,
+            roles: user.roles.map((role) => role.role),
+            organizations: user.organizations.map(
+                (organization) => organization.organization
+            ),
+            shifts: user.shifts.map((shift) => shift.shift),
+        };
         next();
     } catch (error: any) {
         return ResponseFormatter.error(res, error.message);
