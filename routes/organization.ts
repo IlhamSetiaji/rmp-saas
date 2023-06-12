@@ -28,9 +28,7 @@ router.post(
 );
 router.put(
     "/:id/update",
-    upload.any(),
-    CreateOrganizationValidation,
-    OrganizationController.updateOrganization
+    OrganizationController.updateOrganizationHandler()
 );
 router.post(
     "/:id/assign-users",

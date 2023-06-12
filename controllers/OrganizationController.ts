@@ -4,7 +4,10 @@ import ResponseFormatter from "../helpers/ResponseFormatter";
 import multer, { FileFilterCallback } from "multer";
 import path from "path";
 import fs from "fs-extra";
-import { CreateOrganizationValidation, CreateOrganizationValidationHandler } from "../validations/Organization/OrganizationValidator";
+import {
+    CreateOrganizationValidation,
+    CreateOrganizationValidationHandler,
+} from "../validations/Organization/OrganizationValidator";
 
 class OrganizationController {
     private organizationService: OrganizationService;
@@ -39,16 +42,15 @@ class OrganizationController {
     }
 
     createOrganization = async (req: Request, res: Response) => {
-        if(!req.file){
-            throw new Error("No file uploaded");
-        }
         try {
             const payload = req.body;
-            payload.image = req.file.path;
+            if (!req.file) {
+                payload.image = "";
+            } else {
+                payload.image = req.file.path;
+            }
             const organization =
-                await this.organizationService.createOrganization(
-                    payload
-                );
+                await this.organizationService.createOrganization(payload);
             return ResponseFormatter.success(
                 res,
                 organization,
@@ -64,14 +66,17 @@ class OrganizationController {
             this.upload.single("image"),
             CreateOrganizationValidation,
             CreateOrganizationValidationHandler,
-            this.createOrganization
+            this.createOrganization,
         ];
-    };                    
+    };
 
     getAllOrganizations = async (req: Request, res: Response) => {
         try {
             const organizations =
                 await this.organizationService.getAllOrganizations();
+            organizations.forEach((organization) => {
+                organization.image = `${process.env.BASE_URL}/${organization.image}`;
+            });
             return ResponseFormatter.success(
                 res,
                 organizations,
@@ -98,12 +103,38 @@ class OrganizationController {
         }
     };
 
+    handleRemoveImage = async (req: Request, res: Response) => {
+        try {
+            const organizationToUpdate =
+                await this.organizationService.getOrganizationById(
+                    parseInt(req.params.id)
+                );
+            if (!organizationToUpdate) {
+                throw new Error("Organization not found");
+            }
+            if (organizationToUpdate.image) {
+                fs.unlink(organizationToUpdate.image, (err) => {
+                    if (err) {
+                        throw new Error("Error deleting file");
+                    }
+                });
+            }
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
     updateOrganization = async (req: Request, res: Response) => {
         try {
+            this.handleRemoveImage(req, res);
+            const payload = req.body;
+            if (req.file) {
+                payload.image = req.file.path;
+            }
             const organization =
                 await this.organizationService.updateOrganization(
                     parseInt(req.params.id),
-                    req.body
+                    payload
                 );
             return ResponseFormatter.success(
                 res,
@@ -113,6 +144,15 @@ class OrganizationController {
         } catch (error: any) {
             return ResponseFormatter.error(res, error.message);
         }
+    };
+
+    updateOrganizationHandler = (): any => {
+        return [
+            this.upload.single("image"),
+            CreateOrganizationValidation,
+            CreateOrganizationValidationHandler,
+            this.updateOrganization,
+        ];
     };
 
     assignUsersToOrganization = async (req: Request, res: Response) => {
@@ -151,6 +191,7 @@ class OrganizationController {
 
     deleteOrganization = async (req: Request, res: Response) => {
         try {
+            this.handleRemoveImage(req, res);
             const organization =
                 await this.organizationService.deleteOrganization(
                     parseInt(req.params.id)
