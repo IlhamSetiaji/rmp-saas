@@ -92,6 +92,32 @@ class ShiftService implements IShiftService {
             usersToAssign
         );
     };
+
+    getUsersByShiftId = async (shiftId: number): Promise<any> => {
+        const shift = await this.shiftRepository.getShiftById(shiftId);
+        if (!shift) {
+            throw new Error("Shift not found");
+        }
+        const users = await this.shiftRepository.getUsersByShiftId(shiftId);
+        if(users.users.length === 0) {
+            throw new Error("No users assigned to this shift");
+        }
+        return users;
+    };
+
+    resignEmployeesFromShift = async (shiftId: number, userIds: number[]): Promise<any> => {
+        const shift = await this.shiftRepository.getShiftById(shiftId);
+        if (!shift) {
+            throw new Error("Shift not found");
+        }
+        const users = await this.shiftRepository.getUsersByShiftId(shiftId);
+        const usersId = users.users.map((user) => user.id);
+        const usersToResign = userIds.filter((id) => usersId.includes(+id));
+        return await this.shiftRepository.resignEmployeesFromShift(
+            shiftId,
+            usersToResign
+        );
+    };
 }
 
 export default ShiftService;

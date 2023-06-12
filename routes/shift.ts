@@ -38,5 +38,12 @@ router.post(
     AssignUsersToShiftValidation,
     ShiftController.assignEmployeesToShift
 );
+router.get("/:shiftId/users", ShiftController.getUsersByShiftId);
+router.post(
+    "/:shiftId/resign",
+    upload.any(),
+    AssignUsersToShiftValidation,
+    ShiftController.resignEmployeesFromShift
+);
 
 export default router;
