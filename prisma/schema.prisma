@@ -33,6 +33,7 @@ model Organization {
   name        String
   description String?               @default("")
   address     String?               @default("")
+  image       String?               @default("")
   createdAt   DateTime              @default(now())
   updatedAt   DateTime              @updatedAt
   deletedAt   DateTime?

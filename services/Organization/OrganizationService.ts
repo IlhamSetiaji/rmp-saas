@@ -2,7 +2,6 @@ import { Organization } from "@prisma/client";
 import OrganizationRepository from "../../repositories/Organization/OrganizationRepository";
 import IOrganizationService from "./IOrganizationService";
 
-
 class OrganizationService implements IOrganizationService{
     private organizationRepository: OrganizationRepository;
     constructor() {

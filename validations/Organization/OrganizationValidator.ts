@@ -1,6 +1,7 @@
-import { body } from "express-validator";
+import { body, validationResult } from "express-validator";
+import { Request, Response, NextFunction } from "express";
 
-const CreateOrganizationValidation = [
+export const CreateOrganizationValidation = [
     body("name")
         .notEmpty()
         .withMessage("Name is required")
@@ -39,4 +40,11 @@ const CreateOrganizationValidation = [
         .optional({ nullable: true })
 ];
 
-export default CreateOrganizationValidation;
+export const CreateOrganizationValidationHandler = (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    } else {
+        next();
+    }
+};
