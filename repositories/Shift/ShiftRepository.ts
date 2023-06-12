@@ -35,6 +35,44 @@ class ShiftRepository implements IShiftRepository {
             },
         });
     };
+
+    getShiftsByOrganization = async (organizationId: number) => {
+        return await this.prisma.shift.findMany({
+            where: {
+                organizationId: organizationId,
+            },
+        });
+    };
+
+    getShiftById = async (shiftId: number) => {
+        return await this.prisma.shift.findUnique({
+            where: {
+                id: shiftId,
+            },
+        });
+    };
+
+    updateShiftById = async (shiftId: number, shift: Shift) => {
+        shift.startAt = dayjs(shift.startAt).add(hour, 'hour').toDate();
+        shift.endAt = dayjs(shift.endAt).add(hour, 'hour').toDate();
+        return await this.prisma.shift.update({
+            where: {
+                id: shiftId,
+            },
+            data: {
+                ...shift,
+                ...this.timestamps
+            },
+        });
+    };
+
+    deleteShiftById = async (shiftId: number) => {
+        return await this.prisma.shift.delete({
+            where: {
+                id: shiftId,
+            },
+        });
+    };
 }
 
 export default ShiftRepository;
