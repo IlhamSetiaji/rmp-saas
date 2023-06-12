@@ -35,7 +35,7 @@ class UserRepository implements IUserRepository {
     };
 
     findByEmail = async (email: string): Promise<User | null> => {
-        return await this.prisma.user.findUnique({
+        const user = await this.prisma.user.findUnique({
             where: { email },
             include: {
                 roles: {
@@ -45,6 +45,7 @@ class UserRepository implements IUserRepository {
                 }
             }
         });
+        return user ? { ...user, roles: user.roles.map((role) => role.role)} as User : null;
     };
 
     create = async (name: string, email: string, password: string): Promise<User> => {

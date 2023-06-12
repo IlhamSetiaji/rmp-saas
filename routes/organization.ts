@@ -8,16 +8,15 @@ const upload = multer({ dest: "uploads/" });
 import CreateOrganizationValidation from "../validations/Organization/CreateOrganizationValidation";
 import AssignUsersToOrganizationValidation from "../validations/Organization/AssignUsersToOrganizationValidation";
 import { RoleMiddleware } from "../middlewares/RoleMiddleware";
-import { hour } from "../config/timezone";
 
 const router = Router();
 
 router.use(AuthMiddleware, EmailVerifiedMiddleware);
 
 /* This is just test */
-router.get("/test", (req, res) => {
-    const jam = hour;
-    res.json(jam);
+router.post("/test", upload.single('image'), (req, res) => {
+    console.log(req.file);
+    return res.send("Hello World");
 });
 /* Don't forget to remove this code before deployment */
 
@@ -25,9 +24,7 @@ router.get("/", OrganizationController.getAllOrganizations);
 router.get("/:id/detail", OrganizationController.getOrganizationById);
 router.post(
     "/",
-    upload.any(),
-    CreateOrganizationValidation,
-    OrganizationController.createOrganization
+    OrganizationController.createOrganizationHandler()
 );
 router.put(
     "/:id/update",
