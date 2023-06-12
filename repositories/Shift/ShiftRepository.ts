@@ -117,12 +117,38 @@ class ShiftRepository implements IShiftRepository {
                 users: {
                     include: {
                         user: true,
-                    }
+                    },
                 },
             },
         });
 
-        return shift ? { ...shift, users: shift.users.map((user) => user.user) } : { users: [] };
+        return shift
+            ? { ...shift, users: shift.users.map((user) => user.user) }
+            : { users: [] };
+    };
+
+    resignEmployeesFromShift = async (shiftId: number, userIds: number[]) => {
+        const shift = await this.prisma.shift.findUnique({
+            where: {
+                id: shiftId,
+            },
+        });
+        if (!shift) {
+            throw new Error("Shift not found");
+        }
+        await this.prisma.shift.update({
+            where: {
+                id: shiftId,
+            },
+            data: {
+                users: {
+                    deleteMany: userIds.map((id) => ({
+                        userId: +id,
+                    })),
+                },
+            },
+        });
+        return shift;
     };
 }
 

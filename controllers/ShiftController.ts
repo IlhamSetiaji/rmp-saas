@@ -54,9 +54,6 @@ class ShiftController {
         try {
             const { shiftId } = req.params;
             const shift = await this.shiftService.updateShiftById(Number(shiftId), req.body);
-            if(!shift) {
-                return ResponseFormatter.notFound(res, 'Shift not found');
-            }
             return ResponseFormatter.success(res, shift, 'Shift updated successfully');
         } catch (error: any) {
             return ResponseFormatter.error(res, error.message);
@@ -67,9 +64,6 @@ class ShiftController {
         try {
             const { shiftId } = req.params;
             const shift = await this.shiftService.deleteShiftById(Number(shiftId));
-            if(!shift) {
-                return ResponseFormatter.notFound(res, 'Shift not found');
-            }
             return ResponseFormatter.success(res, shift, 'Shift deleted successfully');
         } catch (error: any) {
             return ResponseFormatter.error(res, error.message);
@@ -81,9 +75,27 @@ class ShiftController {
             const { shiftId } = req.params;
             const { userIds } = req.body;
             const shift = await this.shiftService.assignEmployeesToShift(Number(shiftId), userIds);
-            if(!shift) {
-                return ResponseFormatter.notFound(res, 'Shift not found');
-            }
+            return ResponseFormatter.success(res, shift, 'Shift updated successfully');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    getUsersByShiftId = async (req: Request, res: Response) => {
+        try {
+            const { shiftId } = req.params;
+            const shift = await this.shiftService.getUsersByShiftId(Number(shiftId));
+            return ResponseFormatter.success(res, shift.users, 'Shift retrieved successfully');
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message);
+        }
+    };
+
+    resignEmployeesFromShift = async (req: Request, res: Response) => {
+        try {
+            const { shiftId } = req.params;
+            const { userIds } = req.body;
+            const shift = await this.shiftService.resignEmployeesFromShift(Number(shiftId), userIds);
             return ResponseFormatter.success(res, shift, 'Shift updated successfully');
         } catch (error: any) {
             return ResponseFormatter.error(res, error.message);
