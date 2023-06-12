@@ -5,7 +5,6 @@ import { AuthMiddleware } from "../middlewares/AuthMiddleware";
 import { EmailVerifiedMiddleware } from "../middlewares/EmailVerifiedMiddleware";
 import multer from "multer";
 const upload = multer({ dest: "uploads/" });
-import CreateOrganizationValidation from "../validations/Organization/CreateOrganizationValidation";
 import AssignUsersToOrganizationValidation from "../validations/Organization/AssignUsersToOrganizationValidation";
 import { RoleMiddleware } from "../middlewares/RoleMiddleware";
 
