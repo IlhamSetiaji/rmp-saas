@@ -9,6 +9,7 @@ import ForgotPasswordValidation from "../validations/User/ForgotPasswordValidati
 import ResetPasswordValidation from "../validations/User/ResetPasswordValidation";
 import shift from "./shift";
 import test from "./test";
+import presence from "./presence";
 
 const upload = multer({ dest: "uploads/" });
 
@@ -42,6 +43,7 @@ router.post(
 router.use("/users", user);
 router.use("/organizations", organization);
 router.use("/shifts", shift);
+router.use("/presences", presence);
 router.use("/test", test);
 
 export default router;

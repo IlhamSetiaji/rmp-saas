@@ -124,7 +124,7 @@ class ShiftRepository implements IShiftRepository {
 
         return shift
             ? { ...shift, users: shift.users.map((user) => user.user) }
-            : { users: [] };
+            : { shift: null, users: [] };
     };
 
     resignEmployeesFromShift = async (shiftId: number, userIds: number[]) => {
