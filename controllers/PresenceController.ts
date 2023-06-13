@@ -55,6 +55,15 @@ class PresenceController {
             return ResponseFormatter.error(res, error.message, error.code);
         }
     };
+
+    public getCurrentEmployeePosition = async (req: any, res: any): Promise<any> => {
+        try {
+            const employee = await this.presenceService.getCurrentEmployeePosition();
+            return ResponseFormatter.success(res, employee, "Done.");
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message, error.code);
+        }
+    };
 }
 
 export default new PresenceController();

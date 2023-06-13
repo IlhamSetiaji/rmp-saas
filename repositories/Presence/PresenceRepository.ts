@@ -152,10 +152,10 @@ class PresenceRepository implements IPresenceRepository {
         presenceId: number,
         presence: Presence
     ): Promise<any> => {
-        // const now = dayjs().add(hour, "hour").toDate();
-        // if (presence.endAt < now) {
-        //     throw new Error("End time must be greater than current time");
-        // }
+        const now = dayjs().add(hour, "hour").toDate();
+        if (presence.endAt < now) {
+            throw new Error("End time must be greater than current time");
+        }
         presence.latitude = +presence.latitude;
         presence.longitude = +presence.longitude;
         presence.accuracy = +presence.accuracy;
