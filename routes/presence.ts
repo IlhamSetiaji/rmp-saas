@@ -46,5 +46,10 @@ router.get(
     RoleMiddleware(["Admin", "Head", "HRD", "Employee"]),
     PresenceController.getCurrentEmployeePosition
 );
+router.get(
+    "/:presenceId/employee/:userId/attendance",
+    RoleMiddleware(["Admin", "Head", "HRD", "Employee"]),
+    PresenceController.employeeAttendance
+);
 
 export default router;
