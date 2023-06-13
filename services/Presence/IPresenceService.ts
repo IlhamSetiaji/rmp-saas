@@ -6,6 +6,7 @@ interface IPresenceService {
     getPresencesByShiftId(shiftId: number): Promise<any>;
     updatePresenceById(presenceId: number, presence: Presence): Promise<any>;
     deletePresenceById(presenceId: number): Promise<any>;
+    getCurrentEmployeePosition(): Promise<any>;
 }
 
 export default IPresenceService;

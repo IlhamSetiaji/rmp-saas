@@ -41,5 +41,10 @@ router.delete(
     "/:presenceId/delete",
     PresenceController.deletePresenceById
 );
+router.get(
+    "/employee",
+    RoleMiddleware(["Admin", "Head", "HRD", "Employee"]),
+    PresenceController.getCurrentEmployeePosition
+);
 
 export default router;
