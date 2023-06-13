@@ -177,6 +177,58 @@ class PresenceRepository implements IPresenceRepository {
             },
         });
     };
+
+    public employeeAttendance = async (
+        userId: number,
+        presenceId: number,
+        range: number
+    ): Promise<any> => {
+        const presence = await this.prisma.presence.findUnique({
+            where: {
+                id: presenceId,
+            },
+            include: {
+                users: {
+                    where: {
+                        userId,
+                    },
+                },
+            },
+        });
+        if (!presence) {
+            throw new Error("Presence not found.");
+        }
+        if (presence.users.length === 0) {
+            throw new Error("User not found.");
+        }
+        const user = presence.users[0];
+        const now = dayjs().add(hour, "hour").toDate();
+        const diff = dayjs(now).diff(dayjs(presence.endAt), "minute");
+        if (diff > 0) {
+            throw new Error("Presence has ended.");
+        }
+        const diffStart = dayjs(now).diff(dayjs(presence.startAt), "minute");
+        if (diffStart < 0) {
+            throw new Error("Presence has not started yet.");
+        }
+        let status = "";
+        if(diffStart > 0 && diffStart < 15) {
+            status = 'ONTIME';
+        } else {
+            status = 'LATE';
+        }
+        const updatedUser = await this.prisma.presenceHasUser.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                range: +range,
+                status,
+                ...this.timestamps,
+            },
+        });
+        return updatedUser;
+    };
 }
 
 export default PresenceRepository;

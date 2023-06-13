@@ -10,7 +10,11 @@ class PresenceController {
     public getPresence = async (req: any, res: any): Promise<any> => {
         try {
             const presence = await this.presenceService.getPresence();
-            return ResponseFormatter.success(res, presence, "Presence retrieved successfully.");
+            return ResponseFormatter.success(
+                res,
+                presence,
+                "Presence retrieved successfully."
+            );
         } catch (error: any) {
             return ResponseFormatter.error(res, error.message, error.code);
         }
@@ -19,8 +23,15 @@ class PresenceController {
     public createPresenceByShift = async (req: any, res: any): Promise<any> => {
         try {
             const { shiftId } = req.params;
-            const presence = await this.presenceService.createPresenceByShift(Number(shiftId), req.body);
-            return ResponseFormatter.success(res, presence, "Presence created successfully.");
+            const presence = await this.presenceService.createPresenceByShift(
+                Number(shiftId),
+                req.body
+            );
+            return ResponseFormatter.success(
+                res,
+                presence,
+                "Presence created successfully."
+            );
         } catch (error: any) {
             return ResponseFormatter.error(res, error.message, error.code);
         }
@@ -29,8 +40,14 @@ class PresenceController {
     public getPresencesByShiftId = async (req: any, res: any): Promise<any> => {
         try {
             const { shiftId } = req.params;
-            const presences = await this.presenceService.getPresencesByShiftId(Number(shiftId));
-            return ResponseFormatter.success(res, presences, "Presences retrieved successfully.");
+            const presences = await this.presenceService.getPresencesByShiftId(
+                Number(shiftId)
+            );
+            return ResponseFormatter.success(
+                res,
+                presences,
+                "Presences retrieved successfully."
+            );
         } catch (error: any) {
             return ResponseFormatter.error(res, error.message, error.code);
         }
@@ -39,8 +56,15 @@ class PresenceController {
     public updatePresenceById = async (req: any, res: any): Promise<any> => {
         try {
             const { presenceId } = req.params;
-            const presence = await this.presenceService.updatePresenceById(Number(presenceId), req.body);
-            return ResponseFormatter.success(res, presence, "Presence updated successfully.");
+            const presence = await this.presenceService.updatePresenceById(
+                Number(presenceId),
+                req.body
+            );
+            return ResponseFormatter.success(
+                res,
+                presence,
+                "Presence updated successfully."
+            );
         } catch (error: any) {
             return ResponseFormatter.error(res, error.message, error.code);
         }
@@ -49,17 +73,40 @@ class PresenceController {
     public deletePresenceById = async (req: any, res: any): Promise<any> => {
         try {
             const { presenceId } = req.params;
-            const presence = await this.presenceService.deletePresenceById(Number(presenceId));
-            return ResponseFormatter.success(res, presence, "Presence deleted successfully.");
+            const presence = await this.presenceService.deletePresenceById(
+                Number(presenceId)
+            );
+            return ResponseFormatter.success(
+                res,
+                presence,
+                "Presence deleted successfully."
+            );
         } catch (error: any) {
             return ResponseFormatter.error(res, error.message, error.code);
         }
     };
 
-    public getCurrentEmployeePosition = async (req: any, res: any): Promise<any> => {
+    public getCurrentEmployeePosition = async (
+        req: any,
+        res: any
+    ): Promise<any> => {
         try {
-            const employee = await this.presenceService.getCurrentEmployeePosition();
+            const employee =
+                await this.presenceService.getCurrentEmployeePosition();
             return ResponseFormatter.success(res, employee, "Done.");
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message, error.code);
+        }
+    };
+
+    public employeeAttendance = async (req: any, res: any): Promise<any> => {
+        try {
+            const { presenceId, userId } = req.params;
+            const employee = await this.presenceService.employeeAttendance(
+                Number(userId),
+                Number(presenceId)
+            );
+            return ResponseFormatter.success(res, employee, "Successfully attend to work");
         } catch (error: any) {
             return ResponseFormatter.error(res, error.message, error.code);
         }

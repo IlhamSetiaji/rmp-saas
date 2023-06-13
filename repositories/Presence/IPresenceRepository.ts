@@ -8,6 +8,7 @@ interface IPresenceRepository {
     getPresencesByShiftId(shiftId: number): Promise<any>;
     updatePresenceById(presenceId: number, presence: Presence): Promise<any>;
     deletePresenceById(presenceId: number): Promise<any>;
+    employeeAttendance(userId: number, presenceId: number, range: number): Promise<any>;
 }
 
 export default IPresenceRepository;
