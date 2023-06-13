@@ -181,8 +181,12 @@ model Presence {
   id        Int               @id @default(autoincrement())
   shift     Shift             @relation(fields: [shiftId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   shiftId   Int
+  name      String
   latitude  Float
   longitude Float
+  accuracy  Int
+  startAt   DateTime         
+  endAt     DateTime         
   status    status            @default(ACTIVE)
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
@@ -198,6 +202,7 @@ model PresenceHasUser {
   presenceId Int
   user       User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId     Int
+  range      Int
   status     presenceStatus @default(SKIP)
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
