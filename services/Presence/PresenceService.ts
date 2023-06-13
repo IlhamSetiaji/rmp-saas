@@ -162,9 +162,6 @@ class PresenceService implements IPresenceService {
             presence.latitude,
             presence.longitude
         );
-        if (distance > presence.accuracy) {
-            throw new Error("You are not in the range.");
-        }
         return await this.presenceRepository.employeeAttendance(
             userId,
             presenceId,

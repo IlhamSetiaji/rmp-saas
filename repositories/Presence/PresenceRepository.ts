@@ -212,7 +212,7 @@ class PresenceRepository implements IPresenceRepository {
             throw new Error("Presence has not started yet.");
         }
         let status = "";
-        if(diffStart > 0 && diffStart < 15) {
+        if(diffStart > 0 && diffStart < presence.accuracy) {
             status = 'ONTIME';
         } else {
             status = 'LATE';
