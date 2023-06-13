@@ -135,10 +135,7 @@ class PresenceService implements IPresenceService {
 
         const a =
             Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-            Math.cos(φ1) *
-                Math.cos(φ2) *
-                Math.sin(Δλ / 2) *
-                Math.sin(Δλ / 2);
+            Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return Math.round(R * c);
@@ -146,7 +143,7 @@ class PresenceService implements IPresenceService {
 
     public employeeAttendance = async (
         userId: number,
-        presenceId: number,
+        presenceId: number
     ): Promise<any> => {
         const presence = await this.presenceRepository.findPresenceById(
             presenceId
@@ -165,7 +162,7 @@ class PresenceService implements IPresenceService {
             presence.latitude,
             presence.longitude
         );
-        if (distance > presence.range) {
+        if (distance > presence.accuracy) {
             throw new Error("You are not in the range.");
         }
         return await this.presenceRepository.employeeAttendance(
