@@ -26,5 +26,20 @@ router.post(
     CreatePresenceValidation,
     PresenceController.createPresenceByShift
 );
+router.get(
+    "/:shiftId/show",
+    RoleMiddleware(["Admin", "Head", "HRD", "Employee"]),
+    PresenceController.getPresencesByShiftId
+);
+router.put(
+    "/:presenceId/update",
+    upload.any(),
+    CreatePresenceValidation,
+    PresenceController.updatePresenceById
+);
+router.delete(
+    "/:presenceId/delete",
+    PresenceController.deletePresenceById
+);
 
 export default router;
