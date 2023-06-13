@@ -25,6 +25,36 @@ class PresenceController {
             return ResponseFormatter.error(res, error.message, error.code);
         }
     };
+
+    public getPresencesByShiftId = async (req: any, res: any): Promise<any> => {
+        try {
+            const { shiftId } = req.params;
+            const presences = await this.presenceService.getPresencesByShiftId(Number(shiftId));
+            return ResponseFormatter.success(res, presences, "Presences retrieved successfully.");
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message, error.code);
+        }
+    };
+
+    public updatePresenceById = async (req: any, res: any): Promise<any> => {
+        try {
+            const { presenceId } = req.params;
+            const presence = await this.presenceService.updatePresenceById(Number(presenceId), req.body);
+            return ResponseFormatter.success(res, presence, "Presence updated successfully.");
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message, error.code);
+        }
+    };
+
+    public deletePresenceById = async (req: any, res: any): Promise<any> => {
+        try {
+            const { presenceId } = req.params;
+            const presence = await this.presenceService.deletePresenceById(Number(presenceId));
+            return ResponseFormatter.success(res, presence, "Presence deleted successfully.");
+        } catch (error: any) {
+            return ResponseFormatter.error(res, error.message, error.code);
+        }
+    };
 }
 
 export default new PresenceController();

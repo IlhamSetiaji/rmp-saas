@@ -42,6 +42,36 @@ class PresenceRepository implements IPresenceRepository {
         });
     };
 
+    public findPresenceById = async (presenceId: number): Promise<any> => {
+        const presence = await this.prisma.presence.findUnique({
+            where: {
+                id: presenceId,
+            },
+            include: {
+                users: {
+                    include: {
+                        user: true,
+                    },
+                },
+            },
+        });
+        if (!presence) {
+            throw new Error("Presence not found.");
+        }
+        return {
+            ...presence,
+            users: presence.users.map((user) => {
+                return {
+                    ...user,
+                    user: {
+                        ...user.user,
+                        password: undefined,
+                    },
+                };
+            }),
+        };
+    };
+
     public createPresenceByShift = async (
         shiftId: number,
         presence: Presence
@@ -87,6 +117,65 @@ class PresenceRepository implements IPresenceRepository {
             });
         });
         return true;
+    };
+
+    public getPresencesByShiftId = async (shiftId: number): Promise<any> => {
+        const presences = await this.prisma.presence.findMany({
+            where: {
+                shiftId,
+            },
+            include: {
+                users: {
+                    include: {
+                        user: true,
+                    },
+                },
+            },
+        });
+        return presences.map((presence) => {
+            return {
+                ...presence,
+                users: presence.users.map((user) => {
+                    return {
+                        ...user,
+                        user: {
+                            ...user.user,
+                            password: undefined,
+                        },
+                    };
+                }),
+            };
+        });
+    };
+
+    public updatePresenceById = async (
+        presenceId: number,
+        presence: Presence
+    ): Promise<any> => {
+        // const now = dayjs().add(hour, "hour").toDate();
+        // if (presence.endAt < now) {
+        //     throw new Error("End time must be greater than current time");
+        // }
+        presence.latitude = +presence.latitude;
+        presence.longitude = +presence.longitude;
+        presence.accuracy = +presence.accuracy;
+        return await this.prisma.presence.update({
+            where: {
+                id: presenceId,
+            },
+            data: {
+                ...presence,
+                ...this.timestamps,
+            },
+        });
+    };
+
+    public deletePresenceById = async (presenceId: number): Promise<any> => {
+        return await this.prisma.presence.delete({
+            where: {
+                id: presenceId,
+            },
+        });
     };
 }
 

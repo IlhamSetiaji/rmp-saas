@@ -38,6 +38,41 @@ class PresenceService implements IPresenceService {
         await this.presenceRepository.assignEmployeeToPresence(createdPresence.id, users.users.map((user: any) => user.id));
         return createdPresence;
     };
+
+    public getPresencesByShiftId = async (shiftId: number): Promise<any> => {
+        const shift = await this.shiftRepository.getShiftById(shiftId);
+        if (!shift) {
+            throw new Error("Shift not found.");
+        }
+        return await this.presenceRepository.getPresencesByShiftId(shiftId);
+    };
+
+    public updatePresenceById = async (presenceId: number, presence: Presence): Promise<any> => {
+        const presenceToUpdate = await this.presenceRepository.findPresenceById(presenceId);
+        if (!presenceToUpdate) {
+            throw new Error("Presence not found.");
+        }
+        const shift = await this.shiftRepository.getShiftById(presenceToUpdate.shiftId);
+        if (!shift) {
+            throw new Error("Shift not found.");
+        }
+        const today = dayjs(new Date()).format("YYYY-MM-DD");
+        presence.startAt = new Date(today + " " + dayjs(shift.startAt).format("HH:mm:ss"));
+        presence.endAt = new Date(today + " " + dayjs(shift.endAt).format("HH:mm:ss"));
+        const diff = dayjs(presence.endAt).diff(dayjs(presence.startAt), "minute");
+        if (diff < 0) {
+            throw new Error("End time must be greater than start time");
+        }
+        return await this.presenceRepository.updatePresenceById(presenceId, presence);
+    };
+
+    public deletePresenceById = async (presenceId: number): Promise<any> => {
+        const presenceToDelete = await this.presenceRepository.findPresenceById(presenceId);
+        if (!presenceToDelete) {
+            throw new Error("Presence not found.");
+        }
+        return await this.presenceRepository.deletePresenceById(presenceId);
+    };
 }
 
 export default PresenceService;
