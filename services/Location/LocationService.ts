@@ -13,6 +13,14 @@ class LocationService implements ILocationService {
         this.organizationRepository = new OrganizationRepository();
     }
 
+    private changeLocationTypeFormat = (location: Location): Location => {
+        location.latitude = parseFloat(location.latitude.toString());
+        location.longitude = parseFloat(location.longitude.toString());
+        location.interval = parseInt(location.interval.toString());
+        location.range = parseInt(location.range.toString());
+        return location;
+    };
+
     public getLocations = async (): Promise<Location[]> => {
         return await this.locationRepository.getLocations();
     };
@@ -22,10 +30,7 @@ class LocationService implements ILocationService {
         if (!organization) {
             throw new Error("Organization not found");
         }
-        location.latitude = parseFloat(location.latitude.toString());
-        location.longitude = parseFloat(location.longitude.toString());
-        location.interval = parseInt(location.interval.toString());
-        location.range = parseInt(location.range.toString());
+        location = this.changeLocationTypeFormat(location);
         return await this.locationRepository.createLocationByOrganization(organizationId, location);
     };
 
@@ -50,10 +55,7 @@ class LocationService implements ILocationService {
         if (!locationData) {
             throw new Error("Location not found");
         }
-        location.latitude = parseFloat(location.latitude.toString());
-        location.longitude = parseFloat(location.longitude.toString());
-        location.interval = parseInt(location.interval.toString());
-        location.range = parseInt(location.range.toString());
+        location = this.changeLocationTypeFormat(location);
         return await this.locationRepository.updateLocationById(locationId, location);
     };
 

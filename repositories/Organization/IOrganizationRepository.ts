@@ -9,6 +9,7 @@ interface IOrganizationRepository {
     resignUsersFromOrganization(userId: number[], organizationId: number): Promise<any>;
     deleteOrganization(id: number): Promise<Organization>;
     assignMyselfToOrganization(userId: number, organizationId: number): Promise<any>;
+    checkIfUserExistInOrganization(userId: number, organizationId: number): Promise<boolean>;
 }
 
 export default IOrganizationRepository;

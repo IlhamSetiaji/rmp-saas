@@ -150,6 +150,22 @@ class ShiftRepository implements IShiftRepository {
         });
         return shift;
     };
+
+    checkIfUserExistInShift = async (shiftId: number, userId: number) => {
+        const shift = await this.prisma.shift.findUnique({
+            where: {
+                id: shiftId,
+            },
+            include: {
+                users: {
+                    where: {
+                        userId: userId,
+                    },
+                },
+            },
+        });
+        return shift ? shift.users.length > 0 : false;
+    };
 }
 
 export default ShiftRepository;
