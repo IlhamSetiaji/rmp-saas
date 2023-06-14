@@ -17,16 +17,39 @@ router.use(
 
 router.get(
     "/",
-    RoleMiddleware(["Admin", "Head", "HRD", "Employee"]),
+    RoleMiddleware(["Admin"]),
     LocationController.getLocations
 );
 
 router.post(
     "/:organizationId/create",
-    RoleMiddleware(["Admin", "Head", "HRD"]),
     upload.any(),
     CreateLocationValidation,
     LocationController.createLocationByOrganization
+);
+
+router.get(
+    "/:organizationId/show",
+    RoleMiddleware(["Admin", "Head", "HRD", "Employee"]),
+    LocationController.getLocationsByOrganization
+);
+
+router.get(
+    "/:locationId/detail",
+    RoleMiddleware(["Admin", "Head", "HRD", "Employee"]),
+    LocationController.getLocationById
+);
+
+router.put(
+    "/:locationId/update",
+    upload.any(),
+    CreateLocationValidation,
+    LocationController.updateLocationById
+);
+
+router.delete(
+    "/:locationId/delete",
+    LocationController.deleteLocationById
 );
 
 export default router;
