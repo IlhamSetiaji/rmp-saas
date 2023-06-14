@@ -30,6 +30,42 @@ class LocationRepository implements ILocationRepository {
             },
         });
     };
+
+    public getLocationsByOrganization = async (organizationId: number): Promise<Location[]> => {
+        return await this.prisma.location.findMany({
+            where: {
+                organizationId,
+            },
+        });
+    };
+
+    public getLocationById = async (locationId: number): Promise<Location> => {
+        return await this.prisma.location.findUnique({
+            where: {
+                id: locationId,
+            },
+        }) as Location;
+    };
+
+    public updateLocationById = async (locationId: number, location: Location): Promise<Location> => {
+        return await this.prisma.location.update({
+            where: {
+                id: locationId,
+            },
+            data: {
+                ...location,
+                updatedAt: this.now,
+            },
+        });
+    };
+
+    public deleteLocationById = async (locationId: number): Promise<Location> => {
+        return await this.prisma.location.delete({
+            where: {
+                id: locationId,
+            },
+        });
+    };
 }
 
 export default LocationRepository;
