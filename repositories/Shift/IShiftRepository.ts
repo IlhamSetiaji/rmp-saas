@@ -10,6 +10,7 @@ interface IShiftRepository {
     assignEmployeesToShift(shiftId: number, userIds: number[]): Promise<Shift | null>;
     getUsersByShiftId(shiftId: number): Promise<any>;
     resignEmployeesFromShift(shiftId: number, userIds: number[]): Promise<Shift | null>;
+    checkIfUserExistInShift(shiftId: number, userId: number): Promise<boolean>;
 }
 
 export default IShiftRepository;

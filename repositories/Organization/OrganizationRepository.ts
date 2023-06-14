@@ -120,6 +120,23 @@ class OrganizationRepository implements IOrganizationRepository {
         });
         return true;
     };
+
+    checkIfUserExistInOrganization = async (
+        userId: number,
+        organizationId: number
+    ): Promise<boolean> => {
+        const organization = await this.prisma.organization.findUnique({
+            where: { id: organizationId },
+            include: {
+                users: true,
+            },
+        });
+        const user = organization?.users.find((user) => user.userId === userId);
+        if (user) {
+            return true;
+        }
+        return false;
+    };
 }
 
 export default OrganizationRepository;
