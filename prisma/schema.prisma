@@ -40,6 +40,7 @@ model Organization {
   users       UserHasOrganization[]
   locations   Location[]
   shifts      Shift[]
+  Report      Report[]
 
   @@map("organizations")
 }
@@ -185,8 +186,8 @@ model Presence {
   latitude  Float
   longitude Float
   accuracy  Int
-  startAt   DateTime         
-  endAt     DateTime         
+  startAt   DateTime
+  endAt     DateTime
   status    status            @default(ACTIVE)
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
@@ -212,20 +213,22 @@ model PresenceHasUser {
 }
 
 model Report {
-  id         Int          @id @default(autoincrement())
-  shift      Shift        @relation(fields: [shiftId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  shiftId    Int
-  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId     Int
-  location   Location     @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  locationId Int
-  latitude   Float
-  longitude  Float
-  range      Int
-  status     reportStatus @default(INRANGE)
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  deletedAt  DateTime?
+  id             Int          @id @default(autoincrement())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  organizationId Int
+  shift          Shift        @relation(fields: [shiftId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  shiftId        Int
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId         Int
+  location       Location     @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  locationId     Int
+  latitude       Float
+  longitude      Float
+  range          Int
+  status         reportStatus @default(INRANGE)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
 
   @@map("reports")
 }
