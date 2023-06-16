@@ -1,6 +1,7 @@
 import LocationService from "../services/Location/LocationService";
 import ResponseFormatter from "../helpers/ResponseFormatter";
 import { Response, Request } from "express";
+import { CreateLocationRequest } from "../requests/Location/CreateLocationRequest";
 
 class LocationController {
     private locationService: LocationService;
@@ -25,7 +26,7 @@ class LocationController {
     public createLocationByOrganization = async (req: Request, res: Response): Promise<any> => {
         try {
             const { organizationId } = req.params;
-            const location = req.body;
+            const location: CreateLocationRequest = req.body;
             const createdLocation = await this.locationService.createLocationByOrganization(
                 parseInt(organizationId),
                 location
