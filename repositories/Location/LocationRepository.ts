@@ -46,6 +46,7 @@ class LocationRepository implements ILocationRepository {
                 id: locationId,
             },
         }) as Location;
+        // test
     };
 
     public updateLocationById = async (locationId: number, location: CreateLocationRequest): Promise<Location> => {

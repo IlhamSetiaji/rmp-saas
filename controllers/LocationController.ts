@@ -76,7 +76,7 @@ class LocationController {
     public updateLocationById = async (req: Request, res: Response): Promise<any> => {
         try {
             const { locationId } = req.params;
-            const location = req.body;
+            const location: CreateLocationRequest = req.body;
             const updatedLocation = await this.locationService.updateLocationById(
                 parseInt(locationId),
                 location
